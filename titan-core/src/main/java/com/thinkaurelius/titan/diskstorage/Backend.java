@@ -38,6 +38,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -86,7 +87,8 @@ public class Backend {
     }};
 
     private final KeyColumnValueStoreManager storeManager;
-    private final StoreFeatures storeFeatures;
+
+	private final StoreFeatures storeFeatures;
 
     private KeyColumnValueStore edgeStore;
     private KeyColumnValueStore vertexIndexStore;
@@ -406,8 +408,18 @@ public class Backend {
      * @return
      * @throws StorageException
      */
-    public BackendTransaction beginTransaction(TransactionConfiguration configuration, KeyInformation.Retriever indexKeyRetriever) throws StorageException {
-        StoreTxConfig txConfig = new StoreTxConfig(configuration.getMetricsPrefix());
+    public BackendTransaction beginTransaction(TransactionConfiguration configuration, KeyInformation.Retriever indexKeyRetriever) throws StorageException{
+    	 StoreTxConfig txConfig = new StoreTxConfig(configuration.getMetricsPrefix());
+    	 return beginTransaction(configuration, indexKeyRetriever, txConfig);
+    }
+    
+    public BackendTransaction beginTransaction(TransactionConfiguration configuration, KeyInformation.Retriever indexKeyRetriever, byte[] visibility) throws StorageException{
+   	 StoreTxConfig txConfig = new StoreTxConfig(configuration.getMetricsPrefix(), visibility);
+   	 return beginTransaction(configuration, indexKeyRetriever, txConfig);
+   }
+    
+   public BackendTransaction beginTransaction(TransactionConfiguration configuration, KeyInformation.Retriever indexKeyRetriever, StoreTxConfig txConfig) throws StorageException {
+       // StoreTxConfig txConfig = new StoreTxConfig(configuration.getMetricsPrefix());
         if (configuration.hasTimestamp()) txConfig.setTimestamp(configuration.getTimestamp());
         StoreTransaction tx = storeManager.beginTransaction(txConfig);
         if (bufferSize > 1) {

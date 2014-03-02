@@ -1,12 +1,12 @@
-package com.thinkaurelius.titan.diskstorage;
+package com.thinkaurelius.titan.diskstorage.accumulo;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thinkaurelius.titan.diskstorage.AbstractAccumuloStoreManager;
-import com.thinkaurelius.titan.diskstorage.connectionpool.AccumuloConnector;
-import com.thinkaurelius.titan.diskstorage.connectionpool.AccumuloConnectorFactory;
-import com.thinkaurelius.titan.diskstorage.connectionpool.AccumuloConnectorPool;
+import com.thinkaurelius.titan.diskstorage.accumulo.AbstractAccumuloStoreManager;
+import com.thinkaurelius.titan.diskstorage.accumulo.connectionpool.AccumuloConnector;
+import com.thinkaurelius.titan.diskstorage.accumulo.connectionpool.AccumuloConnectorFactory;
+import com.thinkaurelius.titan.diskstorage.accumulo.connectionpool.AccumuloConnectorPool;
 
 import org.apache.accumulo.core.client.AccumuloException;
 import org.apache.accumulo.core.client.AccumuloSecurityException;
@@ -25,8 +25,6 @@ public class AccumuloStoreManager extends AbstractAccumuloStoreManager {
 
 	public AccumuloStoreManager(Configuration storageConfig) {
 		super(storageConfig);
-		System.out.println("OK. we are in this AccumuloJavaStoreManager");
-		System.out.println(storageConfig);
 		
 		openStores = new HashMap<String, AccumuloOrderedKeyColumnValueStore>(
 				8);
@@ -115,8 +113,6 @@ public class AccumuloStoreManager extends AbstractAccumuloStoreManager {
 			accumuloConnector = pool.borrowObject();
 
 		} catch (Exception e) {
-			System.out.println(e.toString());
-
 			throw new RuntimeException("Unable to borrow buffer from pool"
 					+ e.toString());
 		}

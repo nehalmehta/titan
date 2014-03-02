@@ -1,4 +1,4 @@
-package com.thinkaurelius.titan.diskstorage;
+package com.thinkaurelius.titan.diskstorage.accumulo;
 
 import java.util.Map;
 

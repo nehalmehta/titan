@@ -1,4 +1,4 @@
-package com.thinkaurelius.titan.diskstorage;
+package com.thinkaurelius.titan.diskstorage.accumulo;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -17,6 +17,9 @@ import org.apache.accumulo.core.data.Value;
 import org.apache.accumulo.core.security.ColumnVisibility;
 import org.apache.hadoop.io.Text;
 
+import cern.colt.Arrays;
+
+import com.google.common.primitives.Bytes;
 import com.thinkaurelius.titan.diskstorage.StaticBuffer;
 import com.thinkaurelius.titan.diskstorage.StorageException;
 import com.thinkaurelius.titan.diskstorage.keycolumnvalue.StoreTransaction;
@@ -25,7 +28,7 @@ import com.thinkaurelius.titan.diskstorage.keycolumnvalue.keyvalue.KeyValueEntry
 import com.thinkaurelius.titan.diskstorage.keycolumnvalue.keyvalue.OrderedKeyValueStore;
 import com.thinkaurelius.titan.diskstorage.util.RecordIterator;
 import com.thinkaurelius.titan.diskstorage.util.StaticByteBuffer;
-import com.thinkaurelius.titan.diskstorage.connectionpool.AccumuloConnector;
+import com.thinkaurelius.titan.diskstorage.accumulo.connectionpool.AccumuloConnector;
 
 public class AccumuloOrderedKeyColumnValueStore implements
 		OrderedKeyValueStore {
@@ -252,20 +255,26 @@ public class AccumuloOrderedKeyColumnValueStore implements
 		AccumuloConnector accumuloConnector = null;
 
 		try {
-
 			accumuloConnector = storeManager.getAccumuloConnector();
 			Connector connector = accumuloConnector.getConnector();
 
 			BatchWriter writer = connector.createBatchWriter(tableName,
 					new BatchWriterConfig());
 			
+			byte[] visibility = ((AccumuloTransaction) txh).getVisibility();
+			ColumnVisibility cv;
+			if(visibility == null){
+				cv = new ColumnVisibility();
+			}else{
+				cv = new ColumnVisibility(visibility);
+			}
+		
 			
-			ColumnVisibility cv = new ColumnVisibility();
 			Text cf = new Text(columnFamilyName);
 			Text cq = new Text(columnFamilyQualifier);
+			
 			Mutation m = new Mutation(new Text(key.asByteBuffer().array()));
 			m.put(cf, cq, cv, new Value(value.asByteBuffer().array()));
-			// new Value(startValue.getBytes(Charset.forName("UTF-8"))));
 			writer.addMutation(m);
 			writer.close();
 

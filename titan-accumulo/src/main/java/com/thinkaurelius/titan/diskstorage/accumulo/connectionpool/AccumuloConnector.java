@@ -1,4 +1,4 @@
-package com.thinkaurelius.titan.diskstorage.connectionpool;
+package com.thinkaurelius.titan.diskstorage.accumulo.connectionpool;
 
 
 import org.apache.accumulo.core.cli.ClientOpts;
@@ -11,10 +11,6 @@ public class AccumuloConnector extends ClientOpts {
 	public void parseArgs(String programName, String[] args, Object... others) {
 		JCommander commander = new JCommander();
 		commander.setAcceptUnknownOptions(true);
-
-		for (String s : args) {
-			System.out.println(s);
-		}
 
 		commander.addObject(this);
 		for (Object other : others)

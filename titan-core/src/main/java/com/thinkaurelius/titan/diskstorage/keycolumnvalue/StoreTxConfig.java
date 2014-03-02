@@ -15,6 +15,8 @@ public class StoreTxConfig {
     private final String metricsPrefix;
 
     private Long timestamp = null;
+    
+    private byte[] visibility = null;
 
     public StoreTxConfig() {
         this(ConsistencyLevel.DEFAULT,
@@ -31,9 +33,18 @@ public class StoreTxConfig {
     }
 
     public StoreTxConfig(ConsistencyLevel consistency, String metricsPrefix) {
-        Preconditions.checkNotNull(consistency);
+        this(consistency, metricsPrefix, null);
+    }
+
+    public StoreTxConfig(String metricsPrefix, byte[] visibility){
+    	this(ConsistencyLevel.DEFAULT, metricsPrefix, visibility);
+    }
+
+    public StoreTxConfig(ConsistencyLevel consistency, String metricsPrefix, byte[] visibility){
+    	Preconditions.checkNotNull(consistency);
         this.consistency = consistency;
         this.metricsPrefix = metricsPrefix;
+        this.setVisibility(visibility);
     }
 
     public StoreTxConfig setTimestamp() {
@@ -59,5 +70,14 @@ public class StoreTxConfig {
     public String getMetricsPrefix() {
         return metricsPrefix;
     }
+
+	public byte[] getVisibility() {
+		return visibility;
+	}
+
+	public void setVisibility(byte[] visibility) {
+		this.visibility = visibility;
+	}
+
 
 }

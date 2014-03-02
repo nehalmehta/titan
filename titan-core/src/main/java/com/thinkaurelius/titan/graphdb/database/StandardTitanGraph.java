@@ -135,6 +135,7 @@ public class StandardTitanGraph extends TitanBlueprintsGraph {
         try {
             IndexSerializer.IndexInfoRetriever retriever = indexSerializer.getIndexInforRetriever();
             StandardTitanTx tx = new StandardTitanTx(this, configuration, backend.beginTransaction(configuration,retriever));
+            
             retriever.setTransaction(tx);
             return tx;
         } catch (StorageException e) {
@@ -230,7 +231,6 @@ public class StandardTitanGraph extends TitanBlueprintsGraph {
                      final Collection<InternalRelation> deletedRelations, final StandardTitanTx tx) {
         //Setup
         log.debug("Saving transaction. Added {}, removed {}", addedRelations.size(), deletedRelations.size());
-
         final BackendTransaction mutator = tx.getTxHandle();
         final boolean acquireLocks = tx.getConfiguration().hasAcquireLocks();
 
@@ -305,10 +305,11 @@ public class StandardTitanGraph extends TitanBlueprintsGraph {
                         if (itype.isPropertyKey() && itype.isNew())
                             indexSerializer.newPropertyKey((TitanKey) itype, mutator);
                     }
-                }
-
+                }   
                 if (!mutations.isEmpty()) mutatedVertexKeys.addAll(persist(mutations, tx));
                 mutator.commit();
+             
+
                 return mutatedVertexKeys;
             }
 
@@ -325,7 +326,6 @@ public class StandardTitanGraph extends TitanBlueprintsGraph {
     private <V extends InternalVertex> List<StaticBuffer> persist(ListMultimap<V, InternalRelation> mutatedEdges,
                                                     StandardTitanTx tx) throws StorageException {
         assert mutatedEdges != null && !mutatedEdges.isEmpty();
-
         Collection<V> vertices = mutatedEdges.keySet();
 
         BackendTransaction mutator = tx.getTxHandle();
@@ -373,5 +373,8 @@ public class StandardTitanGraph extends TitanBlueprintsGraph {
         }
         return mutatedKeys;
     }
-
+    
+    protected Backend getBackend(){
+    	return this.backend;
+    }
 }

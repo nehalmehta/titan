@@ -1,4 +1,4 @@
-package com.thinkaurelius.titan.diskstorage.connectionpool;
+package com.thinkaurelius.titan.diskstorage.accumulo.connectionpool;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 

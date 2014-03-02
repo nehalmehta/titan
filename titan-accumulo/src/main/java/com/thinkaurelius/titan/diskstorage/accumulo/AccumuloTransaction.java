@@ -1,4 +1,4 @@
-package com.thinkaurelius.titan.diskstorage;
+package com.thinkaurelius.titan.diskstorage.accumulo;
 
 import com.google.common.base.Preconditions;
 import com.thinkaurelius.titan.diskstorage.common.AbstractStoreTransaction;
@@ -13,8 +13,11 @@ import com.thinkaurelius.titan.diskstorage.keycolumnvalue.StoreTxConfig;
  */
 public class AccumuloTransaction extends AbstractStoreTransaction {
 
+	private byte[] visibility; 
+	
 	public AccumuloTransaction(StoreTxConfig config) {
 		super(config);
+		this.visibility = config.getVisibility();
 	}
 
 	public static AccumuloTransaction getTx(StoreTransaction txh) {
@@ -22,6 +25,14 @@ public class AccumuloTransaction extends AbstractStoreTransaction {
 		Preconditions.checkArgument(txh instanceof AccumuloTransaction,
 				"Unexpected transaction type %s", txh.getClass().getName());
 		return (AccumuloTransaction) txh;
+	}
+
+	public byte[] getVisibility() {
+		return visibility;
+	}
+
+	public void setVisibility(byte[] visibility) {
+		this.visibility = visibility;
 	}
 
 }
