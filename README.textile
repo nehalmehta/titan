@@ -9,7 +9,7 @@ h2. Titan-Accumulo
 
 Sample Code
 
-``` java
+```java
 
  Configuration conf = new BaseConfiguration();
  // Using AccumuloStoreManager as backend storage
