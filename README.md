@@ -1,0 +1,66 @@
+h2. Titan-Accumulo
+
+* Provides vertex and edge level granuality. 
+* Useful especially when analytics done on master data and restricted to departments.
+* Can expose same nodes and few edges to everyone but restrict few edges between same set of nodes.
+* Set visibility and everything created after it is done for that visibility. 
+* Once data is set committed we can change visibility. 
+* Once stored only users with with rights will have access to vertex and edges.
+
+Sample Code
+
+```Java
+
+ Configuration conf = new BaseConfiguration();
+ // Using AccumuloStoreManager as backend storage
+ conf.setProperty("storage.backend","com.thinkaurelius.titan.diskstorage.accumulo.AccumuloStoreManager");
+ // Accumulo instance name
+ conf.setProperty("storage.instance","graph");
+ // Accumulo credentials
+ conf.setProperty("storage.user","userName");
+ conf.setProperty("storage.password","password");
+ SecureTitanGraph graph = SecureTitanFactory.open(conf);
+
+ // Everything from now will be stored with "manager"
+ graph.setVisibility("manager".getBytes());
+ Vertex juno = graph.addVertex(null);
+ juno.setProperty("name", "juno");
+ Vertex jupiter = graph.addVertex(null);
+ jupiter.setProperty("name", "jupiter");
+ Edge married = graph.addEdge(null, juno, jupiter, "married");
+ // All data has been committed and visibility can be changed.
+ graph.commit();
+ graph.setVisibility("supervisor".getBytes());
+ // Add new data
+
+```
+
+
+!http://thinkaurelius.github.io/titan/images/titan-logo.png!
+
+Titan is a highly scalable "graph database":http://en.wikipedia.org/wiki/Graph_database optimized for storing and querying large graphs with billions of vertices and edges distributed across a multi-machine cluster. Titan is a transactional database that can support "thousands of concurrent users":http://thinkaurelius.com/2012/08/06/titan-provides-real-time-big-graph-data/.
+
+h2. Features
+
+* Elastic and linear scalability for a growing data and user base.
+* Data distribution and replication for performance and fault tolerance.
+* Multi-datacenter high availability and hot backups.
+* Support for "ACID":http://en.wikipedia.org/wiki/ACID and "eventual consistency":http://en.wikipedia.org/wiki/Eventual_consistency.
+* Support for various "storage backends":https://github.com/thinkaurelius/titan/wiki/Storage-Backend-Overview:
+** "Apache Cassandra":http://cassandra.apache.org/ (distributed)
+** "Apache HBase":http://hbase.apache.org/ (distributed)
+** "Oracle BerkeleyDB":http://www.oracle.com/technetwork/database/berkeleydb/overview/index-093405.html (local)
+** "Persistit":https://github.com/pdbeaman/persistit (local)
+* Support for various "indexing backends":https://github.com/thinkaurelius/titan/wiki/Indexing-Backend-Overview:
+** "ElasticSearch":http://www.elasticsearch.org/
+** "Apache Lucene":http://lucene.apache.org/
+* Native integration with the "TinkerPop":http://www.tinkerpop.com graph stack:
+** "Gremlin":http://gremlin.tinkerpop.com graph query language
+** "Frames":http://frames.tinkerpop.com object-to-graph mapper
+** "Rexster":http://rexster.tinkerpop.com graph server
+** "Blueprints":http://blueprints.tinkerpop.com standard graph API
+* Open source with the liberal "Apache 2 license":http://www.apache.org/licenses/LICENSE-2.0.html.
+
+h2. Getting Started
+
+Read the comprehensive "Titan documentation":https://github.com/thinkaurelius/titan/wiki and join the "mailing list":https://groups.google.com/forum/#!forum/aureliusgraphs.
